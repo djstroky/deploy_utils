@@ -14,9 +14,11 @@ dist/
 downloads/
 eggs/
 .eggs/
+Include/
 lib/
 lib64/
 parts/
+Scripts/
 sdist/
 var/
 *.egg-info/
@@ -32,6 +34,7 @@ var/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+pip-selfcheck.json
 
 # Unit test / coverage reports
 htmlcov/
@@ -55,3 +58,10 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Eclipse
+.project
+.pydevproject
+
+# Secrets
+config/
