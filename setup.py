@@ -2,6 +2,18 @@ from setuptools import setup, find_packages
  
 setup(
     name='deploy_utils',
+    version='0.1.0',
+    description='Utilities for deploying projects to EC2',
+    url='https://github.com/djstroky/deploy_utils',
+    author='Evan Siroky',
+    license='MIT',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3'
+    ],
+    keywords='AWS Fabric deployment',
     packages=find_packages(),
     install_requires=[
         'boto>=2.38',
@@ -16,5 +28,6 @@ setup(
         ]
     },
     test_suite='nose.collector',
-    tests_require=['nose']
+    tests_require=['nose'],
+    include_package_data=True
 )

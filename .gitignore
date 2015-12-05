@@ -16,6 +16,7 @@ eggs/
 .eggs/
 Include/
 lib/
+Lib/
 lib64/
 parts/
 Scripts/
@@ -64,4 +65,4 @@ target/
 .pydevproject
 
 # Secrets
-config/
+deploy_utils/config/
