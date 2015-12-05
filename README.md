@@ -17,7 +17,8 @@ For now, just look at the test code.
 
 ### In Another Project
 
-TODO
+Install with pip: `pip install deploy_utils`.
+Put it in your `setup.py` in `install_requires`: `deploy_utils`.
 
 ### As Standalone
 
