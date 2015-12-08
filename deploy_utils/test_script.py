@@ -2,7 +2,7 @@ import os
 
 from deploy_utils import CONFIG_DIR, TEMPLATE_DIR
 from deploy_utils.config import ConfigHelper
-from deploy_utils.ec2 import launch_new_ec2, tear_down, get_ec2_connection
+from deploy_utils.ec2 import launch_new_ec2, tear_down
 from deploy_utils.fab import AmazonLinuxFab, CentOS6Fab
 
 

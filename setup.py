@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
  
 setup(
     name='deploy_utils',
-    version='0.1.0',
+    version='0.2.0',
     description='Utilities for deploying projects to EC2',
-    url='https://github.com/djstroky/deploy_utils',
+    url='https://github.com/evansiroky/deploy_utils',
     author='Evan Siroky',
     license='MIT',
     classifiers=[

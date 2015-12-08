@@ -94,15 +94,15 @@ class RHELFab(Fab):
         # check that mvn command works
         run('/usr/local/maven/bin/mvn -version')
         
-    def install_node(self):
-        '''Installs node and npm.
+    def install_node(self, version='v5.1.1'):
+        '''Installs node, npm and forever.
         '''
         
         # download and install from website instead of yum
-        run('wget https://nodejs.org/dist/v4.0.0/node-v4.0.0-linux-x64.tar.gz')
-        sudo('tar xzf node-v4.0.0-linux-x64.tar.gz -C /usr/local')
-        run('rm -rf node-v4.0.0-linux-x64.tar.gz')
-        sudo('mv /usr/local/node-v4.0.0-linux-x64 /usr/local/node')
+        run('wget https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.gz'.format(version))
+        sudo('tar xzf node-{0}-linux-x64.tar.gz -C /usr/local'.format(version))
+        run('rm -rf node-{0}-linux-x64.tar.gz'.format(version))
+        sudo('mv /usr/local/node-{0}-linux-x64 /usr/local/node'.format(version))
         sudo('ln -s /usr/local/node/bin/node /usr/bin/node')
         sudo('ln -s /usr/local/node/bin/npm /usr/bin/npm')
         
