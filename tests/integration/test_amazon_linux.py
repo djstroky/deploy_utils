@@ -3,7 +3,7 @@ import os
 from deploy_utils import TEMPLATE_DIR
 from deploy_utils.fab import AmazonLinuxFab
 
-from tests.ec2_base import EC2BaseTestCase
+from tests.integration.ec2_base import EC2BaseTestCase
 
 
 class AmazonLinuxTestCase(EC2BaseTestCase):

@@ -123,6 +123,13 @@ class RHELFab(Fab):
         '''
         
         sudo('yum -y update')
+
+    def populate_and_upload_template_file(self, data_dict, configHelper, filename, destination,
+                                          use_sudo=False, out_filename=None):
+        '''Create new data file from a template and then upload it to machine.
+        '''
+
+        put(configHelper.write_template(data_dict, filename, out_filename), destination, use_sudo)
         
     def _upload_pg_hba_conf2(self, remote_data_folder, 
                              remote_pg_hba_conf, local_method):
@@ -133,9 +140,11 @@ class RHELFab(Fab):
         
         if not exists(self.config_dir):
             run('mkdir {0}'.format(self.config_dir))
-        
-        put(self._config_helper.write_template(dict(local_method=local_method), 'pg_hba.conf'),
-            self.config_dir)
+
+        self.populate_and_upload_template_file(dict(local_method=local_method),
+                                               self._config_helper,
+                                               'pg_hba.conf',
+                                               self.config_dir)
         
         sudo('mv {0} {1}'.format(unix_path_join(self.config_dir, 'pg_hba.conf'),
                                  remote_data_folder))
@@ -159,10 +168,11 @@ class CentOS6Fab(RHELFab):
                    user_name))
         
         # grant sudo access to regular user
-        put(self._config_helper.write_template(dict(non_root_user=user_name),
-                                               'user-init'),
-            '/etc/sudoers.d',
-            True)
+        self.populate_and_upload_template_file(dict(non_root_user=user_name),
+                                               self._config_helper,
+                                               'user-init',
+                                               '/etc/sudoers.d',
+                                               True)
     
     def install_helpers(self):
         '''Installs various utilities (typically not included with CentOS).

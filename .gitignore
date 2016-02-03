@@ -60,9 +60,10 @@ docs/_build/
 # PyBuilder
 target/
 
-# Eclipse
+# IDE
 .project
 .pydevproject
+.idea
 
 # Secrets
 deploy_utils/config/
