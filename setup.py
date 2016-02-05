@@ -22,9 +22,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'launch_amazon_linux=deploy_utils.test_script:amazon_linux_test_battery',
-            'launch_centos6=deploy_utils.test_script:centos6_test_battery',
-            'temp=deploy_utils.test_script:temp'
+            'launch_amazon_linux=deploy_utils.example_script:amazon_linux_test_battery',
+            'launch_centos6=deploy_utils.example_script:centos6_test_battery'
         ]
     },
     test_suite='nose.collector',

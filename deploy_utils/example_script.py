@@ -61,6 +61,3 @@ def centos6_test_battery():
 
     # Terminate EC2 instance.
     tear_down(ec2_instance.id, ec2_connection)
-
-def temp():
-    print 'hi'

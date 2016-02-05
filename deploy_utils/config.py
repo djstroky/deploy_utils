@@ -56,14 +56,11 @@ class ConfigHelper:
         config.read(config_filename)
         return DefaultConfig(config)
     
-    def setup(self, config_type, test_input=False):
+    def setup(self, config_type):
         '''Helps user create config file based off of template.
         User must manually enter stuff.
         '''
 
-        if test_input:
-            input = lambda k: 'blah'
-        
         print('-----------------')
         print('Setting up config for {0}'.format(config_type))              
               
