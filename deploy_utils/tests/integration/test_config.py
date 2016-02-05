@@ -30,51 +30,53 @@ class TestConfigHelper(TestCase):
 
     def setUp(self):
         self.conf_helper = ConfigHelper(CONFIG_DIR, TEMPLATE_DIR)
+        self.conf_file = os.path.join(CONFIG_DIR, 'test_conf_helper.ini')
+        try:
+            os.remove(self.conf_file)
+        except:
+            pass
+
+    def tearDown(self):
+
+        for file_to_remove in [self.conf_file,
+                               os.path.join(CONFIG_DIR, 'test_conf_helper_out.ini')]:
+            try:
+                os.remove(file_to_remove)
+            except:
+                pass
 
     def test_get_config(self):
 
-        conf_file = os.path.join(CONFIG_DIR, 'test_temp.ini')
-        with open(conf_file, 'w') as f:
+        with open(self.conf_file, 'w') as f:
             f.write("[DEFAULT]\ntest_key = {test_val}")
 
-        conf = self.conf_helper.get_config('test_temp')
+        conf = self.conf_helper.get_config('test_conf_helper')
         assert isinstance(conf, DefaultConfig)
-        assert '{test_key}' == conf.get('test_key')
-
-        os.remove(conf_file)
+        assert '{test_val}' == conf.get('test_key')
 
     def test_setup(self):
 
-        conf_file = os.path.join(CONFIG_DIR, 'test_temp.ini')
-        try:
-            os.remove(conf_file)
-        except:
-            pass
-
         deploy_utils.config.input = lambda _: 'blah'
-        self.conf_helper.setup('test_temp')
+        self.conf_helper.setup('test_conf_helper')
 
-        assert os.path.exists(conf_file)
-        with open(conf_file) as f:
+        assert os.path.exists(self.conf_file)
+        with open(self.conf_file) as f:
             contents = f.read()
-            assert 'test_key=blah' in contents
-
-        os.remove(conf_file)
+            assert 'test_key = blah' in contents
 
     def test_write_template(self):
 
-        conf_file = os.path.join(CONFIG_DIR, 'test_temp.ini')
-        try:
-            os.remove(conf_file)
-        except:
-            pass
+        for outfilename in [None, 'test_conf_helper_out.ini']:
+            self.conf_helper.write_template(dict(test_key='blah blah'),
+                                            'test_conf_helper.ini',
+                                            outfilename)
 
-        self.conf_helper.write_template(dict(test_key='blah blah'),
-                                        os.path.join(TEMPLATE_DIR, 'test_temp'))
+            if outfilename is None:
+                outfilename = 'test_conf_helper.ini'
 
-        assert os.path.exists(conf_file)
-        with open(conf_file) as f:
-            contents = f.read()
-            assert 'test_key=blah blah' in contents
+            outpath = os.path.join(CONFIG_DIR, outfilename)
 
-        os.remove(conf_file)
+            assert os.path.exists(outpath)
+            with open(outpath) as f:
+                contents = f.read()
+                assert 'test_key = blah blah' in contents
