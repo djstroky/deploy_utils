@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
  
 setup(
     name='deploy_utils',
-    version='0.2.0',
+    version='0.3.0',
     description='Utilities for deploying projects to EC2',
     url='https://github.com/evansiroky/deploy_utils',
     author='Evan Siroky',
@@ -22,9 +22,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'launch_amazon_linux=deploy_utils.test_script:amazon_linux_test_battery',
-            'launch_centos6=deploy_utils.test_script:centos6_test_battery',
-            'temp=deploy_utils.test_script:temp'
+            'launch_amazon_linux=deploy_utils.example_script:amazon_linux_test_battery',
+            'launch_centos6=deploy_utils.example_script:centos6_test_battery'
         ]
     },
     test_suite='nose.collector',

@@ -1,8 +1,9 @@
-try: 
+try:
     input = raw_input
 except NameError: 
     pass
 
+from string import Formatter
 import ConfigParser
 import os
 
@@ -14,6 +15,19 @@ class DefaultConfig:
         
     def get(self, key):
         return self.config_parser.get('DEFAULT', key)
+
+    def make_params_for_template(self, template_filename):
+        out = dict()
+        with open(template_filename) as f:
+            template = f.read()
+
+        for key in [i[1] for i in Formatter().parse(template)]:
+            try:
+                out[key] = self.get(key)
+            except:
+                out[key] = None
+
+        return out
 
 
 class ConfigHelper:
@@ -46,7 +60,7 @@ class ConfigHelper:
         '''Helps user create config file based off of template.
         User must manually enter stuff.
         '''
-        
+
         print('-----------------')
         print('Setting up config for {0}'.format(config_type))              
               

@@ -3,7 +3,7 @@ import os
 from deploy_utils import TEMPLATE_DIR
 from deploy_utils.fab import CentOS6Fab
 
-from tests.ec2_base import EC2BaseTestCase
+from deploy_utils.tests.integration.ec2_base import EC2BaseTestCase
 
 
 class Centos6TestCase(EC2BaseTestCase):
