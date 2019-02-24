@@ -31,7 +31,7 @@ The project is based of off python 2.7, but is best used with the `virtualenv` d
 4. Browse to project folder `cd deploy_utils`
 5. Activate the virtualenv: 
   - Windows: `.\Scripts\activate`
-  - Linux: `bin/activate`
+  - Linux: `source bin/activate`
 6. (Windows only) Manually install the `pycrypto` library.  The followin command assumes you have 32 bit python 2.7 installed: `pip install http://www.voidspace.org.uk/python/pycrypto-2.6.1/pycrypto-2.6.1-cp27-none-win32.whl`  If 64 bit python 2.7 is installed, run the following command instaed:  `pip install http://www.voidspace.org.uk/python/pycrypto-2.6.1/pycrypto-2.6.1-cp27-none-win_amd64.whl`
 7. Install the python project using develop mode: `python setup.py develop`
 
@@ -42,6 +42,7 @@ You will need to do the following for automatically launching Amazon EC2 instanc
 - Create AWS account
  - Get the access key
  - Get the secret access key
+ - Create a profile in `~/.aws/credentials` with the above keys
 - Create security group
  - Add your IP to list of allowed inbound traffic [(see aws docs)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html).
 - Create key pair [(see aws docs)](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html).
@@ -65,6 +66,7 @@ You will need to do the following for automatically launching Amazon EC2 instanc
 | --- | --- |
 | ami_id | The base ami to start from.  See notes about finding AMI ids above. |
 | aws_access_key_id | Access key for account. |
+| aws_profile_name | The profile name where you put the keys |
 | aws_secret_access_key | Secret access key for account. |
 | block_device_map | Where to attach storage.  Amazon Linux: `/dev/xvda`  CentOS 6: `/dev/sda1` |
 | cron_email | Who to email in cron jobs. |

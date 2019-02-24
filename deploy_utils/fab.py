@@ -73,23 +73,29 @@ class RHELFab(Fab):
         '''
         
         sudo('yum -y install git')
-        
+
     def install_jdk(self):
         '''Installs jdk devel, so maven is happy.
         '''
-        
+
         sudo('yum -y install java-1.7.0-openjdk java-1.7.0-openjdk-devel')
+
+    def install_jdk8(self):
+        '''Installs jdk devel, so maven is happy.
+        '''
+
+        sudo('yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel')
         
     def install_maven(self):
         '''Downloads and installs maven.
         '''
         
         # download and extract maven
-        run('wget http://mirror.symnds.com/software/Apache/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz')
-        sudo('tar xzf apache-maven-3.3.3-bin.tar.gz -C /usr/local')
-        run('rm apache-maven-3.3.3-bin.tar.gz')
+        run('wget http://mirror.cogentco.com/pub/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz')
+        sudo('tar xzf apache-maven-3.6.0-bin.tar.gz -C /usr/local')
+        run('rm apache-maven-3.6.0-bin.tar.gz')
         with cd('/usr/local'):
-            sudo('ln -s apache-maven-3.3.3 maven')
+            sudo('ln -s apache-maven-3.6.0 maven')
         
         # check that mvn command works
         run('/usr/local/maven/bin/mvn -version')
@@ -256,12 +262,12 @@ class AmazonLinuxFab(RHELFab):
         '''
         
         # install helpers
-        sudo('yum -y install perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https')
+        sudo('yum install -y perl-Switch perl-DateTime perl-Sys-Syslog perl-LWP-Protocol-https perl-Digest-SHA.x86_64')
         
         # dl scripts
-        run('wget http://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.1.zip')
-        sudo('unzip CloudWatchMonitoringScripts-1.2.1.zip -d /usr/local')
-        run('rm CloudWatchMonitoringScripts-1.2.1.zip')
+        run('wget https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip')
+        sudo('unzip CloudWatchMonitoringScripts-1.2.2.zip -d /usr/local')
+        run('rm CloudWatchMonitoringScripts-1.2.2.zip')
         
         # prepare the monitoring crontab        
         cron = 'MAILTO={cron_email}\n'

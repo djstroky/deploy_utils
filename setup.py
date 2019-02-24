@@ -1,9 +1,15 @@
+import os
 from setuptools import setup, find_packages
+
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
+    README = f.read()
  
 setup(
     name='deploy_utils',
-    version='0.3.0',
+    version='1.0.0',
     description='Utilities for deploying projects to EC2',
+    long_description=README,
+    long_description_content_type="text/markdown",
     url='https://github.com/evansiroky/deploy_utils',
     author='Evan Siroky',
     license='MIT',
@@ -16,8 +22,8 @@ setup(
     keywords='AWS Fabric deployment',
     packages=find_packages(),
     install_requires=[
-        'boto>=2.38',
-        'fabric>=1.10.1',
+        'boto3>=1.9.101',
+        'fabric>=1.10.1,<2',
         'django-fab-deploy>=0.7.5'
     ],
     entry_points={

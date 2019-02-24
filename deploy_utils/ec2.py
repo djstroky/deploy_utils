@@ -1,84 +1,81 @@
+import boto3
 import time
-
-import boto.ec2
-
-
-def get_ec2_connection(aws_conf):
-    '''Connect to AWS EC2.
+from botocore.exceptions import ClientError
     
-    Args:
-        aws_conf (deploy_utils.config.DefaultConfig): Configuration vals for AWS.
-    
-    Returns:
-        boto.ec2.connection.EC2Connection: Connection to region.
-    '''
-    
-    print('Connecting to AWS')
-    return boto.ec2.connect_to_region(aws_conf.get('region'),
-                                      aws_access_key_id=aws_conf.get('aws_access_key_id'),
-                                      aws_secret_access_key=aws_conf.get('aws_secret_access_key'))
-    
-    
-def launch_new_ec2(aws_conf, return_connection=False):
-    '''Launch a new EC2 instance installing an OBA instance
+def launch_new_ec2(aws_conf, return_dns_name=False):
+    '''Launch a new EC2 instance
     
     Args:
         aws_conf (deploy_utils.config.DefaultConfig): Configuration vals for AWS.
         return_connection (boolean, default=False): true to return both the instance and the connection
     
     Returns:
-        varies: either the instance that was launched.
+        varies: either the instance_id that was launched.
             or
-            the instance that was launched and the ec2 connection
+            the instance_id that was launched and the public_dns_name
     '''
-    
-    conn = get_ec2_connection(aws_conf)
-    
-    print('Preparing volume')
-    block_device = boto.ec2.blockdevicemapping.EBSBlockDeviceType()
-    block_device.size = aws_conf.get('volume_size')
-    block_device.delete_on_termination = True
-    block_device_map = boto.ec2.blockdevicemapping.BlockDeviceMapping()
-    block_device_map[aws_conf.get('block_device_map')] = block_device 
-    
-    print('Launching new instance')
-    reservation = conn.run_instances(aws_conf.get('ami_id'),
-                                     instance_type=aws_conf.get('instance_type'),
-                                     key_name=aws_conf.get('key_pair_name'),
-                                     security_groups=aws_conf.get('security_groups').split(','),
-                                     block_device_map=block_device_map)
-    
-    # Get the instance
-    instance = reservation.instances[0]
-    
+
+    boto3.setup_default_session(
+        profile_name=aws_conf.get('aws_profile_name'),
+        region_name=aws_conf.get('region')
+    )
+    ec2 = boto3.client('ec2')
+
+    try:
+        print('Launching new instance')
+        response = ec2.run_instances(
+            BlockDeviceMappings=[
+                {
+                    'DeviceName': aws_conf.get('block_device_map'),
+                    'Ebs': {
+
+                        'DeleteOnTermination': True,
+                        'VolumeSize': int(aws_conf.get('volume_size')),
+                        'VolumeType': 'gp2'
+                    },
+                },
+            ],
+            ImageId=aws_conf.get('ami_id'),
+            InstanceType=aws_conf.get('instance_type'),
+            KeyName=aws_conf.get('key_pair_name'),
+            MaxCount=1,
+            MinCount=1,
+            Monitoring={
+                'Enabled': False
+            },
+            SecurityGroupIds=aws_conf.get('security_groups').split(',')
+        )
+        instance_id = response['Instances'][0]['InstanceId']
+    except ClientError as e:
+        print(e)
+
     # Check if it's up and running a specified maximum number of times
     max_retries = 10
     num_retries = 0
-    
-    # Check up on its status every so often
-    status = instance.update()
+    status = 'pending'
+
+    print('Launch successful, waiting until instance is running')
     while status == 'pending':
         if num_retries > max_retries:
-            tear_down(instance.id, conn)
+            tear_down(instance_id)
             raise Exception('Maximum Number of Instance Retries Hit.  Did EC2 instance spawn correctly?')
-        num_retries += 1 
+        num_retries += 1
         print('Instance pending, waiting 10 seconds...')
         time.sleep(10)
-        status = instance.update()
-    
-    if status == 'running':
-        instance.add_tag("Name", aws_conf.get('instance_name'))
-    else:
-        print('Instance status: ' + status)
-        return None
-    
-    if return_connection:
-        return instance, conn
-    else:
-        return instance
+        response = ec2.describe_instances(InstanceIds=[instance_id])
+        instance_info = response['Reservations'][0]['Instances'][0]
+        status = instance_info['Monitoring']['State']
+        instance_public_dns_name = instance_info['PublicDnsName']
+        if not instance_public_dns_name:
+            status = 'pending'
 
 
-def tear_down(instance_id, conn):
+    if return_dns_name:
+        return instance_id, instance_public_dns_name
+    else:
+        return instance_id
+
+def tear_down(instance_id):
     '''Terminates a EC2 instance and deletes all associated volumes.
     
     Args:
@@ -87,4 +84,4 @@ def tear_down(instance_id, conn):
     '''
     
     print('Terminating instance')
-    conn.terminate_instances([instance_id])
+    boto3.resource('ec2').Instance(instance_id).terminate()
