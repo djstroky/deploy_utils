@@ -6,7 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
  
 setup(
     name='deploy_utils',
-    version='1.0.0',
+    version='1.0.1',
     description='Utilities for deploying projects to EC2',
     long_description=README,
     long_description_content_type="text/markdown",

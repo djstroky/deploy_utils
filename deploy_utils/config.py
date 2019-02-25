@@ -50,6 +50,7 @@ class ConfigHelper:
         config_filename = '{0}.ini'.format(config_type)
         config_filename = os.path.join(self.config_dir, config_filename)
         if not os.path.exists(config_filename):
+            print('Need to setup config file {0}'.format(config_filename))
             self.setup(config_type)
             
         config = ConfigParser.ConfigParser()
